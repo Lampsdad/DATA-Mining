@@ -68,7 +68,6 @@ Both datasets are downloaded on first run and cached as Apache Parquet files in 
    jupyter notebook main_notebook.ipynb
   ```
 4. The notebook downloads SPC data from NOAA on first run and caches it as `cache/spc_cache.parquet`. NCEI data is similarly cached. Subsequent runs use the cache.
-5. For v7 results (clustering bake-off, merge validation, continuum analysis), run `python testing_rewrite.py` in the `DATA-Mining/` directory. Outputs go to `testing_outputs/`.
 
 ### Running in Google Colab
 

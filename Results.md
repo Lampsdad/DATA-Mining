@@ -371,3 +371,4 @@ The data isn't a pure continuum (K=2 clustering is stable and meaningful) and is
 - `testing_outputs/clustering_bakeoff.csv` — 100 (method × subset × hyperparam) rows
 - `testing_outputs/continuum_pca.png` — heavy-tailed continuum visualization
 - `testing_outputs/feature_importances.csv` — GBR importances + Spearman correlations
+
