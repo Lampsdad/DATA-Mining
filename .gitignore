@@ -1,0 +1,44 @@
+# Data (large cached files — re-downloaded on first run)
+cache/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Figures (can be regenerated)
+figures/
+assets/
+
+# Archive (local version history, not part of deliverable)
+archive/
+
+# Local project files
+ListOfConcepts.txt
+Progress.MD
+Requirements.md
+_result*
+
+# Requirements export (Colab-specific, optional)
+requirements_colab.txt

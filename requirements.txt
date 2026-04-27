@@ -1,0 +1,24 @@
+# CSCE 676 Final Project — Pinned Dependencies
+# Install with: pip install -r requirements.txt
+
+# Data processing
+numpy==2.4.4
+pandas==3.0.2
+
+# Scientific computing
+scipy==1.17.1
+
+# Machine learning / clustering
+scikit-learn==1.8.0
+scikit-fuzzy==0.5.0
+python-igraph==1.0.0
+leidenalg==0.11.0
+python-louvain==0.16
+hdbscan==0.8.47
+
+# Graph analysis
+networkx==3.6.1
+
+# Visualization
+matplotlib==3.10.8
+seaborn==0.13.2

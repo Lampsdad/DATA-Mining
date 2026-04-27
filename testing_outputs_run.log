@@ -1,0 +1,143 @@
+
+============================================================================
+PHASE A — Load and restrict to 1996-2024
+============================================================================
+SPC clean events       : 35,061
+Outbreak days (>=6)  : 1,740
+SPC events on outbreak : 27,675
+NCEI tornado events    : 41,140
+NCEI date range        : 1996-01-01 00:00:00 -> 2024-12-29 00:00:00
+NCEI state-code coverage: 100.0%
+NCEI begin_dt parsed   : 100.0%
+
+============================================================================
+PHASE B — Merge validation (event-level)
+============================================================================
+
+[B.1] Per-day count agreement on 1740 shared outbreak days:
+      Spearman rho = 0.954        median(SPC/NCEI) = 0.92
+      PASS (threshold rho >= 0.85)
+
+[B.2] Hard invariants:
+      max_episode_size > spc_n : 53 / 1740 days (FAIL)
+      NCEI dates not in SPC clean: 3,405  (expected: many, since most NCEI tornadoes fall on non-outbreak days)
+
+[B.3] Event-level nearest-neighbor matching (radius=50km, |dt|<=1h)...
+      Matched 24,933 / 32,508 eligible NCEI events (76.7%)  in 3.4s
+      Mean dist = 1.4 km   mean |dt| = 0.20 h
+      FAIL (threshold >= 80%)
+      Magnitude regex coverage = 24.0%   exact = 72.2%   within-1 = 86.9%
+
+[B.4] State agreement on matched pairs: 99.7%   (PASS threshold >= 90%)
+
+[B.5] Timezone audit on matched pairs (NCEI - SPC, hours):
+      median dt = +0.00h   p90 |dt| = 1.00h
+      |dt| > 12h count = 0
+      NCEI internal date vs begin_dt mismatch: 0
+
+[B.6] Narrative regex audit (random samples):
+      QLCS regex hit rate     : 11.4%
+      Supercell regex hit rate: 21.2%
+      Co-occurrence rate      : 4.5%
+    -- 5 random QLCS HITS --
+      [QLCS-HIT ] To the southeast of Hallettsville, and southeast of the first tornado, a second tornado touched down near 0345 CST.  This was just off FM530 on Road 16C, near the community of Ligh
+      [QLCS-HIT ] This tornado began north of MS Highway 488, producing a tornadic debris signature on radar, and continued eastward across Thaggard Road. At this location, the roof of a senior care
+      [QLCS-HIT ] A trained spotter reported a very brief tornado just west of the Interlake State Recreation Area and east of Indiana Highway 61. No damage was located in this rural area. During th
+      [QLCS-HIT ] Damage path provided by Charlotte County Emergency Management. A weather station on a public building near the end of the tornado path recorded a 75 mph wind gust and was used to d
+      [QLCS-HIT ] The weak tornado touched down to the southwest of Gibraltar Road and West Jefferson Avenue in the Brownstown Creek area. The tornado traveled southeast across West Jefferson Avenue
+    -- 5 random QLCS MISSES (with non-empty narrative) --
+      [QLCS-MISS] The tornado tracked northward for about 2 miles. Trees were snapped or uprooted in shelterbelts. Peak winds were estimated at 95 mph. Conditions were ripe by the afternoon of the 1
+      [QLCS-MISS] A EF0 tornado touched down briefly and removed the roofs from a single family home and mobile home. Portions of the roofs and other debris were carried downstream, with large metal
+      [QLCS-MISS] The tornado crossed into Daviess County from Mclean County. Numerous  structures were damaged or destroyed, mostly barns and outbuildings. Several residences were destroyed, and ab
+      [QLCS-MISS] A tornado briefly touched down in rural country near Republic.
+      [QLCS-MISS] A WEAK TORNADO WAS SPAWNED ABOUT 2 MILES SOUTHWEST OF COVE. THE TORNADO CAUSED MOSTLY TREE, POWER LINE AND POWER POLE DAMAGE AS IT MOVED NORTHEAST.  A FEW BUILDINGS SUSTAINED ROOF 
+    -- 5 random SUPERCELL HITS --
+      [CELL-HIT ] A tornado touched down near Highway 66 west of Chandler, moved northeast, and lifted near Chandler Lake. This tornado damaged trees and power lines. Several roofs of homes were dam
+      [CELL-HIT ] Tornado dropped down north of Beaman and progressed southeast.  Crossed into Tama County from Grundy County.  Most of the track was through open country. A cold front frontal syste
+      [CELL-HIT ] Law enforcement reported a brief tornado touchdown which uprooted a few trees at 3707 CR 101. Thunderstorms formed quickly across Val Verde County in the unstable environment ahead
+      [CELL-HIT ] A supercell storm produced a brief tornado in the town of Woodston. Eye witness accounts suggest this tornado skipped through town on its short path. The most significant damage wa
+      [CELL-HIT ] A local television forecaster filmed a tornado in open country southwest of Fort Stockton associated with a supercell thunderstorm.  This thunderstorm produced up to baseball size 
+
+[B] OVERALL: PARTIAL — see details
+
+============================================================================
+PHASE C — Feature engineering (no imputation)
+============================================================================
+Outbreak days engineered: 1,740
+Dropped 0 days with no NCEI coverage; kept 1,740.
+Feature matrix (FULL): (1740, 29)    NaN cells = 0
+Feature subsets: FULL=29, GEOMETRY=9, TABULAR=9
+Phase C runtime: 9.1s
+
+[!] WARNING: hard invariant has 53 / 1740 day violations — see merge_validation_report.txt
+
+============================================================================
+PHASE D — Clustering bake-off
+============================================================================
+
+--- subset = FULL (29 feats) ---
+  subset FULL runtime: 25.1s
+
+--- subset = GEOMETRY (9 feats) ---
+  subset GEOMETRY runtime: 15.5s
+
+--- subset = TABULAR (9 feats) ---
+  subset TABULAR runtime: 15.3s
+
+--- Top 12 bake-off results by silhouette (all rows) ---
+ method   subset            params  n_clusters  min_cluster_n  noise_pct  silhouette  bootstrap_ari  non_degenerate
+ Agglom GEOMETRY link=complete,k=3           3              3      0.000       0.627          0.513           False
+ Agglom     FULL  link=average,k=3           3              1      0.000       0.617          0.440           False
+ Agglom  TABULAR  link=average,k=3           3              1      0.000       0.612          0.533           False
+ Agglom     FULL  link=average,k=4           4              1      0.000       0.598          0.310           False
+ Agglom  TABULAR  link=average,k=4           4              1      0.000       0.554          0.753           False
+ Agglom  TABULAR  link=average,k=5           5              1      0.000       0.541          0.713           False
+ Agglom GEOMETRY  link=average,k=3           3              3      0.000       0.515          0.439           False
+ Agglom GEOMETRY  link=average,k=4           4              3      0.000       0.497          0.794           False
+ Agglom     FULL  link=average,k=5           5              1      0.000       0.478          0.464           False
+ Agglom GEOMETRY  link=average,k=5           5              2      0.000       0.476          0.766           False
+ Agglom  TABULAR link=complete,k=3           3              1      0.000       0.453          0.552           False
+HDBSCAN GEOMETRY            mcs=15           2             15     97.126       0.439          0.372           False
+
+--- Top 12 NON-DEGENERATE results (min_cluster_n >= 30, noise <= 50%) ---
+  method   subset        params  n_clusters  min_cluster_n  noise_pct  silhouette  bootstrap_ari  non_degenerate               sizes
+     GMM GEOMETRY k=2,bic=13434           2             65        0.0       0.375          0.228            True             1675,65
+  KMeans  TABULAR           k=2           2            348        0.0       0.320          0.865            True            1392,348
+     FCM  TABULAR  k=2,pc=0.546           2            703        0.0       0.218            NaN            True            1037,703
+     GMM  TABULAR k=2,bic=32813           2            615        0.0       0.204          0.618            True            1125,615
+Spectral  TABULAR           k=2           2            473        0.0       0.188            NaN            True             527,473
+Spectral GEOMETRY           k=2           2            348        0.0       0.183            NaN            True             652,348
+     GMM     FULL k=2,bic=91777           2            315        0.0       0.177          0.884            True            1425,315
+  KMeans GEOMETRY           k=3           3            382        0.0       0.174          0.802            True         771,587,382
+  KMeans GEOMETRY           k=2           2            724        0.0       0.174          0.462            True            1016,724
+     GMM GEOMETRY k=3,bic=10172           3             65        0.0       0.172          0.517            True          999,676,65
+  KMeans  TABULAR           k=4           4            160        0.0       0.172          0.828            True     716,570,294,160
+  KMeans  TABULAR           k=5           5            169        0.0       0.170          0.681            True 608,408,384,171,169
+
+============================================================================
+PHASE E — Verdict
+============================================================================
+Best silhouette overall          : 0.6273 (100 combos)
+Best silhouette non-degenerate    : 0.3747 (59 combos passed filter)
+Threshold for 'usable clustering' : silhouette >= 0.2
+
+=== CLUSTERING IS USABLE (non-degenerate split passes threshold) ===
+
+============================================================================
+PHASE F — Save artifacts
+============================================================================
+Wrote testing_outputs\clustering_bakeoff.csv  (100 rows)
+Wrote testing_outputs\merge_validation_report.txt
+
+============================================================================
+DONE
+============================================================================
+Recommendation: keep_clustering
+Traceback (most recent call last):
+  File "C:\Users\BigAlan\Desktop\Research\Tornado-Tracking\DATA-Mining\testing_rewrite.py", line 1055, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\BigAlan\Desktop\Research\Tornado-Tracking\DATA-Mining\testing_rewrite.py", line 1050, in main
+    print(f"Best silhouette: {verdict.get('best_silhouette'):.4f} "
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: unsupported format string passed to NoneType.__format__
