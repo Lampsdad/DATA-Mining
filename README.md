@@ -24,7 +24,7 @@ It walks through the full story: motivation, data, methods, results, and conclus
 
 ## 🎥 Project Video
 
-> **Add your video link here:** [▶ Watch the project video](LINK_HERE)
+> **Add your video link here:** [▶ Watch the project video](https://youtu.be/Uxlq85QtMw4)
 
 ---
 
@@ -68,26 +68,39 @@ Both datasets are downloaded on first run and cached as Apache Parquet files in 
    jupyter notebook main_notebook.ipynb
   ```
 4. The notebook downloads SPC data from NOAA on first run and caches it as `cache/spc_cache.parquet`. NCEI data is similarly cached. Subsequent runs use the cache.
+5. For v7 results (clustering bake-off, merge validation, continuum analysis), run `python testing_rewrite.py` in the `DATA-Mining/` directory. Outputs go to `testing_outputs/`.
 
-> **Note:** The notebook uses `matplotlib.use('Agg')` for headless rendering. If running interactively, you can change this to `'inline'` or `'TkAgg'`.
+### Running in Google Colab
+
+This project was built and tested in **Google Colab** (Python 3.13). The fastest way to reproduce the analysis:
+
+1. Upload `requirements.txt` to a Colab notebook and run `!pip install -r requirements.txt`
+2. Upload or clone this repository into the Colab environment
+3. Open `main_notebook.ipynb` and run all cells in order with `Runtime → Run all`
+4. Data is downloaded and cached automatically on first run
+
+A one-click link can be added once the repo is public on GitHub (use [Colab's notebook viewer](https://colab.research.google.com/github/) with your repo URL).
 
 ---
 
 ## 🔑 Key Dependencies
 
 
-| Package       | Version | Purpose                             |
-| ------------- | ------- | ----------------------------------- |
-| Python        | 3.13    | Runtime                             |
-| pandas        | 3.0.2   | Data manipulation                   |
-| numpy         | 2.4.4   | Numerical computing                 |
-| scikit-learn  | 1.8.0   | Clustering, classification, metrics |
-| scipy         | 1.17.1  | Statistical tests, spatial queries  |
-| networkx      | 3.6.1   | Graph construction and PageRank     |
-| matplotlib    | 3.10.8  | Visualization                       |
-| seaborn       | 0.13.2  | Visualization                       |
-| scikit-fuzzy  | 0.5.0   | Fuzzy c-means clustering            |
-| python-igraph | 1.0.0   | Leiden community detection          |
+| Package        | Version | Purpose                             |
+| -------------- | ------- | ----------------------------------- |
+| Python         | 3.13    | Runtime                             |
+| pandas         | 3.0.2   | Data manipulation                   |
+| numpy          | 2.4.4   | Numerical computing                 |
+| scikit-learn   | 1.8.0   | Clustering, classification, metrics |
+| scipy          | 1.17.1  | Statistical tests, spatial queries  |
+| networkx       | 3.6.1   | Graph construction and PageRank     |
+| matplotlib     | 3.10.8  | Visualization                       |
+| seaborn        | 0.13.2  | Visualization                       |
+| scikit-fuzzy   | 0.5.0   | Fuzzy c-means clustering            |
+| python-igraph  | 1.0.0   | Leiden community detection          |
+| leidenalg      | 0.11.0  | Leiden algorithm (Python binding)   |
+| hdbscan        | 0.8.47  | Density-based clustering            |
+| python-louvain | 0.16    | Louvain community detection         |
 
 
 Full list in `[requirements.txt](requirements.txt)`.
@@ -135,6 +148,7 @@ DATA-Mining/
 **Continuum regression on the same features:** 5-fold CV gradient boosting predicts `log1p(fatality_total)` with R² = **0.496 ± 0.047**. Top predictors: `ef2plus_count`, `max_mag`, `violent_count`, plus geography (`region_lat`, `region_lon`) entering non-linearly.
 
 **Other results (v6, unchanged):**
+
 - **P2 passed**: EF4+ rate 3.4× higher in the v6 archetype (11.8% vs 3.5%), p = 5.93×10⁻¹⁴
 - **P3 passed**: Apr 27, 2011 bearing coherence (p = 0.021, mean bearing = 87°)
 - **Real-time prediction**: SPC-like features achieve AUROC = 0.746 at T+2h for EF4+ outcomes; cascade graph features add no significant lift (Wilcoxon p > 0.05)

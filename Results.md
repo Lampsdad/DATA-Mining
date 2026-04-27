@@ -271,6 +271,7 @@ The v6 analysis successfully merges SPC and NCEI data and builds a rich feature 
 ## 11. v7 Follow-Up — Clean-Window Re-Analysis (1996–2024)
 
 The v6 §8 high-priority recommendations were implemented in `testing_rewrite.py`:
+
 - 1996–2024 restriction (eliminates median-imputed NCEI flags)
 - Cascade graph features dropped (Wilcoxon test in §5 showed no AUROC lift)
 - Wide clustering bake-off (100 method × subset × hyperparameter combos)
@@ -281,16 +282,18 @@ The v6 §8 high-priority recommendations were implemented in `testing_rewrite.py
 
 The v6 day-level join was never explicitly cross-validated. v7 added event-level checks:
 
-| Check | Result | Verdict |
-|---|---|---|
-| Per-day count Spearman ρ (1,740 shared days) | **0.954** | PASS |
-| Median(SPC count / NCEI count) | 0.92 | NCEI ~8% more events (per-segment rows) |
-| Hard invariant `max_episode_size ≤ spc_n` | 53 days violate (3.0%) | partial — multi-county segmenting |
-| Event-level NN match (50 km / 1 h tolerance) | 76.7% (24,933 / 32,508) | partial |
-| Match precision among matches | 1.4 km mean dist, 0.20 h mean \|Δt\| | excellent |
-| State agreement on matched pairs | **99.7%** | PASS |
-| Timezone audit (Δ NCEI − SPC, hours) | median 0.00 h, p90 1.0 h | PASS |
-| Internal NCEI consistency | 0 mismatches | PASS |
+
+| Check                                        | Result                        | Verdict                                 |
+| -------------------------------------------- | ----------------------------- | --------------------------------------- |
+| Per-day count Spearman ρ (1,740 shared days) | **0.954**                     | PASS                                    |
+| Median(SPC count / NCEI count)               | 0.92                          | NCEI ~8% more events (per-segment rows) |
+| Hard invariant `max_episode_size ≤ spc_n`    | 53 days violate (3.0%)        | partial — multi-county segmenting       |
+| Event-level NN match (50 km / 1 h tolerance) | 76.7% (24,933 / 32,508)       | partial                                 |
+| Match precision among matches                | 1.4 km mean dist, 0.20 h mean | Δt                                      |
+| State agreement on matched pairs             | **99.7%**                     | PASS                                    |
+| Timezone audit (Δ NCEI − SPC, hours)         | median 0.00 h, p90 1.0 h      | PASS                                    |
+| Internal NCEI consistency                    | 0 mismatches                  | PASS                                    |
+
 
 The merge is well-aligned in time and space; the 23% unmatched fraction reflects NCEI's per-segment-row convention for multi-county tornadoes, not a merge bug.
 
@@ -298,30 +301,34 @@ The merge is well-aligned in time and space; the 23% unmatched fraction reflects
 
 Of 100 (method × subset × hyperparam) combinations, 59 passed the non-degenerate filter. Top non-degenerate results:
 
-| Method | Subset | K | Sizes | Silhouette | Bootstrap ARI |
-|---|---|---|---|---|---|
-| GMM | GEOMETRY | 2 | 1,675 / 65 | 0.375 | 0.228 |
-| **K-Means** | **TABULAR** | **2** | **1,392 / 348** | **0.320** | **0.865** |
-| FCM | TABULAR | 2 | 1,037 / 703 | 0.218 | — |
-| GMM | TABULAR | 2 | 1,125 / 615 | 0.204 | 0.618 |
-| Spectral | TABULAR | 2 | 527 / 473 | 0.188 | — |
-| K-Means | GEOMETRY | 3 | 771 / 587 / 382 | 0.174 | 0.802 |
+
+| Method      | Subset      | K     | Sizes           | Silhouette | Bootstrap ARI |
+| ----------- | ----------- | ----- | --------------- | ---------- | ------------- |
+| GMM         | GEOMETRY    | 2     | 1,675 / 65      | 0.375      | 0.228         |
+| **K-Means** | **TABULAR** | **2** | **1,392 / 348** | **0.320**  | **0.865**     |
+| FCM         | TABULAR     | 2     | 1,037 / 703     | 0.218      | —             |
+| GMM         | TABULAR     | 2     | 1,125 / 615     | 0.204      | 0.618         |
+| Spectral    | TABULAR     | 2     | 527 / 473       | 0.188      | —             |
+| K-Means     | GEOMETRY    | 3     | 771 / 587 / 382 | 0.174      | 0.802         |
+
 
 The headline is **K-Means K=2 on TABULAR features**: silhouette 0.320 (≈ 2.8× the v6 result of 0.114) with bootstrap ARI 0.865 — partition recovers on 86.5% of resampled subsets, indicating stable structure.
 
 ### 11.3 Cluster Profile
 
-| | C0 (n=1,392, 80%) | C1 (n=348, 20%) | C1 / C0 |
-|---|---|---|---|
-| event_count | 10.9 | 35.8 | 3.3× |
-| max_mag | 1.52 | 2.87 | — |
-| violent_count (EF4+ on day) | 0.02 | 0.38 | 19× |
-| fatality_total (mean) | 0.26 | 4.75 | 18× |
-| has_ef4plus rate | 2.2% | **23.6%** | 10.7× |
-| qlcs_flag rate | 27% | 54% | 2.0× |
-| supercell_flag rate | 47% | 79% | 1.7× |
-| Spring (Apr–May) share | 31% | 49% | — |
-| Central plains (lat 35–40) | 36% | 49% | — |
+
+|                             | C0 (n=1,392, 80%) | C1 (n=348, 20%) | C1 / C0 |
+| --------------------------- | ----------------- | --------------- | ------- |
+| event_count                 | 10.9              | 35.8            | 3.3×    |
+| max_mag                     | 1.52              | 2.87            | —       |
+| violent_count (EF4+ on day) | 0.02              | 0.38            | 19×     |
+| fatality_total (mean)       | 0.26              | 4.75            | 18×     |
+| has_ef4plus rate            | 2.2%              | **23.6%**       | 10.7×   |
+| qlcs_flag rate              | 27%               | 54%             | 2.0×    |
+| supercell_flag rate         | 47%               | 79%             | 1.7×    |
+| Spring (Apr–May) share      | 31%               | 49%             | —       |
+| Central plains (lat 35–40)  | 36%               | 49%             | —       |
+
 
 **1996–2024 totals:** C0 produced 362 deaths in 1,392 days; C1 produced **1,653 deaths in 348 days**. C1 is 20% of the days but accounts for **82% of all fatalities**. All four spot-checked named historic outbreaks (1999 OKC, 2011 Apr 27, 2013 Moore, 2021 Quad-State) land in C1.
 
@@ -331,10 +338,12 @@ The headline is **K-Means K=2 on TABULAR features**: silhouette 0.320 (≈ 2.8×
 
 PCA(2) explains 19.2% (PC1) + 10.4% (PC2) = 29.6% of variance — heavy-tailed continuum, no discrete bimodal gap. Treating the same feature space continuously:
 
-| Model | 5-fold CV R² (log fatality) | Std |
-|---|---|---|
-| Ridge (α=1.0) | 0.455 | ±0.059 |
-| **Gradient Boosting** (200 trees, depth 3) | **0.496** | ±0.047 |
+
+| Model                                      | 5-fold CV R² (log fatality) | Std    |
+| ------------------------------------------ | --------------------------- | ------ |
+| Ridge (α=1.0)                              | 0.455                       | ±0.059 |
+| **Gradient Boosting** (200 trees, depth 3) | **0.496**                   | ±0.047 |
+
 
 GBR explains roughly half the variance in `log1p(fatality_total)` from outbreak-day SPC + NCEI features alone — comparable to the v6 OII Spearman ρ = 0.581 and properly out-of-sample.
 
@@ -344,12 +353,14 @@ Top GBR features (by importance): `ef2plus_count` (0.27), `max_mag` (0.22), `vio
 
 The v6 "no structure" verdict was overstated. After eliminating imputation noise and noisy graph features, the data supports **two complementary views**:
 
-| | Clustering (K=2 K-Means, TABULAR) | Continuum regression |
-|---|---|---|
-| Output | Discrete C0 / C1 label | Continuous predicted log-fatality |
-| Quality | Silhouette 0.32, ARI 0.87 | GBR R² 0.50 ± 0.05 |
-| Question answered | "Is this a major-class day?" | "How bad will this day be?" |
-| Operational use | Triage flag (top 20% catches 82% of fatalities) | Calibrated risk regression |
+
+|                   | Clustering (K=2 K-Means, TABULAR)               | Continuum regression              |
+| ----------------- | ----------------------------------------------- | --------------------------------- |
+| Output            | Discrete C0 / C1 label                          | Continuous predicted log-fatality |
+| Quality           | Silhouette 0.32, ARI 0.87                       | GBR R² 0.50 ± 0.05                |
+| Question answered | "Is this a major-class day?"                    | "How bad will this day be?"       |
+| Operational use   | Triage flag (top 20% catches 82% of fatalities) | Calibrated risk regression        |
+
 
 The data isn't a pure continuum (K=2 clustering is stable and meaningful) and isn't textbook well-separated either (silhouette 0.32 is moderate). It's both — a stable severity binary at K=2 on a heavy-tailed continuous severity distribution. Future work to recover convective-mode separation (the original RQ1) requires environmental features (CAPE, 0–6 km shear, helicity, LCL) not present in SPC + NCEI.
 
