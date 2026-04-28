@@ -95,6 +95,9 @@ This project was built and tested in **Google Colab** (Python 3.13). The fastest
 | scikit-fuzzy   | 0.5.0   | Fuzzy c-means clustering            |
 | hdbscan        | 0.8.47  | Density-based clustering            |
 | python-louvain | 0.16    | Louvain community detection          |
+| python-igraph  | 1.0.0   | Graph analysis                       |
+| leidenalg      | 0.11.0  | Leiden community detection           |
+| networkx       | 3.6.1   | Graph analysis                       |
 
 Full list in [requirements.txt](requirements.txt).
 
