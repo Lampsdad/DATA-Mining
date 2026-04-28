@@ -15,10 +15,10 @@ It walks through the full story: motivation, data, methods, results, and conclus
 
 ## Research Questions
 
-1. **RQ1 — Severity Classification:** Can we identify distinct, meteorologically interpretable outbreak severity classes from historical tornado data alone?
-2. **RQ2 — Extreme Tornado Separation:** Do certain outbreak archetypes produce significantly more EF4+ tornadoes than others? (P2)
-3. **RQ3 — Propagation Coherence:** Do major outbreaks exhibit statistically significant directional coherence in their tornado trajectories? (P3 — tested on Apr 27, 2011)
-4. **RQ4 — Real-Time Prediction:** Can we predict whether an evolving outbreak will produce an EF4+ tornado from early observations?
+1. **RQ1 Severity Classification:** Can we identify distinct, meteorologically interpretable outbreak severity classes from historical tornado data alone?
+2. **RQ2 Extreme Tornado Separation:** Do certain outbreak archetypes produce significantly more EF4+ tornadoes than others?
+3. **RQ3 Propagation Coherence:** Do major outbreaks exhibit statistically significant directional coherence in their tornado trajectories?
+4. **RQ4 Real-Time Prediction:** Can we predict whether an evolving outbreak will produce an EF4+ tornado from early observations?
 
 ---
 
