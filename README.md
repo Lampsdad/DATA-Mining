@@ -24,7 +24,7 @@ It walks through the full story: motivation, data, methods, results, and conclus
 
 ## Project Video
 
-> **Add your video link here:** [▶ Watch the project video](https://youtu.be/Uxlq85QtMw4)
+> [Watch the project video](https://youtu.be/Uxlq85QtMw4)
 
 ---
 
